@@ -14,6 +14,8 @@ from TweetStreaming import MyListener
 from os import urandom
 from binascii import hexlify
 
+import requests as req
+
 monkey_patch()
 socketio = SocketIO()
 
