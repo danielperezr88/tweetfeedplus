@@ -1,0 +1,20 @@
+{% extends "main_template.html" %}
+{% block content %}
+  <header>
+    <h1>Twitter Feed Plus</h1>
+    <ul id="nav">
+        {% if not session.logged_in %}
+        <li><a href="{{ url_for('login') }}">log in</a>
+        {% else %}
+        <li><a href="{{ url_for('new_stream') }}">new stream</a></li>
+        <li><a href="{{ url_for('logout') }}">log out</a></li>
+        {% endif %}
+    </ul>
+  </header>
+  <div id="flash-msg">
+    {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% block body %}{% endblock %}
+{% endblock %}

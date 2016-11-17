@@ -1,0 +1,28 @@
+{% extends "index.html" %}
+{% block body %}
+  <div id="content">
+    <div id="form-outer-wrapper">
+      <div id="form-inner-wrapper">
+        <h2>Set New Stream</h2>
+        {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+        <form action="{{ url_for('streampeek') }}" method=post>
+            <dl>
+              <dt>Terms:
+              <dd><input type=text name=terms>
+              <dt>Languages:
+              <dd><input type=text name=languages>
+              <dt>Twitter Consumer Key:
+              <dd><input type=password name=consumer_key>
+              <dt>Twitter Consumer Secret:
+              <dd><input type=password name=consumer_secret>
+              <dt>Twitter Access Token Key:
+              <dd><input type=password name=access_token_key>
+              <dt>Twitter Access Token Secret:
+              <dd><input type=password name=access_token_secret>
+              <dd><input type=submit value=Proceed>
+            </dl>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

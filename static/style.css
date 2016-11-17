@@ -1,0 +1,158 @@
+html, body {min-height:100%; padding:0; margin:0;font-family: sans-serif;}
+
+a {text-decoration: none;}
+
+h1 {padding:15px;margin:0;text-align:center;font-size: 1.75em;}
+
+div.page {padding:130px 0 50px 0; position:absolute; top:0; bottom:0; left:0; right:0;}
+
+header {
+    margin-top:-130px;
+    height:93px;
+    background-color: rgba(170,170,170,0.5);
+    border-style: solid;
+    border-width: 0 0 1px 0;
+}
+
+footer {margin-bottom:-50px; height:25px; padding:12.5px;}
+
+#flash-msg {height: 30px;}
+
+ul#nav {
+    display: inline-block;
+    list-style-type: none;
+    margin: 0;
+    margin-bottom: 1px;
+}
+
+ul#nav > li {
+    display: inline-block;
+    text-align: center;
+}
+
+ul#nav > li > a{
+    padding: 6px 5px 14px 5px;
+    color: #333;
+    position: relative;
+}
+
+ul#nav > li > a:hover{background-color: rgba(255,255,255,0.5);}
+
+ul#nav > li > a:after{content:'.';position:absolute;top:19px;margin-left:-95%;height:19px;font-weight:900;width:100%;}
+
+/*ul#nav > li:not(:first-child):before{content:'|';margin-left: -7px;margin-right: -8px;font-size: 21pt;line-height: 1px;}
+
+ul#nav > li:not(:first-child) > a{
+    margin-left: 5px;
+}*/
+
+#content {height:100%; overflow-y:scroll; position:relative;}
+
+div#form-outer-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+div#form-inner-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 250px;
+    height: 90%;
+}
+
+.login form, .new_stream form {
+    padding: 0.3em;
+    border-style: solid;
+    border-width: 1px;
+    border-color: slategray;
+    background-color: rgba(170,170,170,0.3);
+}
+
+.login h2, .new_stream h2 {
+    text-align: center;
+}
+
+.login form > dl > dd:last-child, .new_stream form > dl > dd:last-child {
+    margin-top: 19px;
+    margin-left: 0;
+    position: relative;
+    height: 30px;
+}
+
+.login form > dl > dd:last-child > input[type="submit"], .new_stream form > dl > dd:last-child > input[type="submit"] {
+    position: absolute;
+    margin: auto;
+    width: 30%;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.login form > dl > dt:not(:first-child), .new_stream form > dl > dt:not(:first-child) {
+    margin-top: 0.5em;
+}
+
+.login form > dl > dt, .new_stream form > dl > dt {
+    margin-bottom: 0.3em;
+}
+
+.streampeek #content > ul#tweets > li > div > h4 {
+    margin: 0.5em;
+}
+
+footer > form:not(:first-child) {margin-left: 0.725em;}
+footer > form {display:inline-block;}
+
+.streampeek #content > ul#tweets {padding:0; margin:auto; position:absolute; max-width:430px; left:0; right:0;}
+
+.streampeek #content > ul#tweets > li {
+    padding: 2px;
+    margin:0;
+    padding: 0.25em;
+    list-style: none;
+}
+
+.streampeek #content > ul#tweets > li > div {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    max-width: 430px;
+}
+
+.streampeek #content > ul#tweets > li > div.system {
+    border-color: slategrey;
+}
+
+.streampeek #content > ul#tweets > li > div.tweet {
+    border-color: royalblue;
+}
+
+.streampeek #content > ul#tweets > li > div.tweet > img {
+  position: relative;
+  float: right;
+  margin-top: -50px !important;
+  margin-right: 2px !important;
+  z-index: -1;
+}
+
+.streampeek #content > ul#tweets > li > div.tweet > p {
+    margin-left: 1.2em;
+    max-width: 78%;
+}
+
+.streampeek #content > ul#tweets > li > div.tweet > div.values > ul > li {
+    display: inline-block;
+    margin-left: 1em;
+}
+
+.streampeek #content > ul#tweets > li > div.tweet > div.values > ul {
+    border-top: solid 1px royalblue;
+    padding: 3px;
+}

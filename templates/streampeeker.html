@@ -1,0 +1,106 @@
+{% extends "index.html" %}
+{% block body %}
+  <div id="content">
+    <ul id=tweets></ul>
+  </div>
+  <footer>
+    <form id="start" method="POST" action="#">
+      <label>Update every </label><input type="number" min="1" max="5" step="1" value="{{ qty }}" name="qty"><label> tweets </label>
+      <input type="submit" value="Start">
+    </form>
+    <form id="stop" method="POST" action="#">
+      <input id="index" type="hidden" required="true" value="">
+      <input type="submit" value="Stop">
+    </form>
+    <form id="checkalive" method="POST" action="#">
+      <input type="submit" value="Are you Alive?">
+    </form>
+    <script type="text/javascript" charset="utf-8">
+      var namespace = '/streampeek_socket';
+      var lastmsg = [];
+      var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);/*"amqp://localhost:5672/streampeek_socket");^*/
+      $(document).ready(function() {
+        ajaxMsg = function(contents, type){
+            attributes = ['src','href','alt','width','height','onclick'];
+            res = $('<li/>').append($('<div/>').addClass(type));
+            for (var elem in contents){
+                if (contents[elem]['class'] in ['img'])
+                    aux = $('<'+contents[elem]['class']+'>');
+                else
+                    aux = $('<'+contents[elem]['class']+'/>');
+                if ('content' in contents[elem])
+                    aux.append(contents[elem]['content']);
+                for (var at in attributes){
+                    if (attributes[at] in contents[elem])
+                        aux.attr(attributes[at], contents[elem][attributes[at]]);
+                }
+                res.find('div').append(aux);
+            }
+            return res;
+        };
+        addTweet = function(contents, type){
+            $('#tweets').append(ajaxMsg(contents, type)).html();
+
+            $('#content').animate({
+                scrollTop:$('#tweets').find('li').last().offset().top -
+                    $('#tweets').find('li').first().offset().top -
+                    parseInt($('#content').css('height')) +
+                    parseInt($('#tweets').find('li').last().css('height'))+7},1000,'swing');
+        };
+        socket.on('success_remove', function() {
+          addTweet({'title':{'class':'h4','content':'Disconnect signal sent'}},'system');
+        });
+        socket.on('remove_failure', function() {
+          addTweet({'title':{'class':'h4','content':'Disconnect signal failed'}},'system');
+        });
+        socket.on('success_connect', function() {
+          addTweet({'title':{'class':'h4','content':'Successfuly connected'}},'system');
+        });
+        socket.on('im_alive', function() {
+          addTweet({'title':{'class':'h4','content':'I\'m still Alive'}},'system');
+        });
+        socket.on('not_valid_token', function() {
+          addTweet({'title':{'class':'h4','content':'Not valid token given'}},'system');
+        });
+        socket.on('thread_created', function(data) {
+          addTweet({'title':{'class':'h4','content':'Thread created'}},'system');
+          $('#index').val(data.index);
+        });
+        socket.on('tweet_data', function(msg) {
+          lastmsg = msg;
+          for (var i = 0; i < msg.data.length; i++) {
+              addTweet({
+                  'title': {'class': 'h4', 'content': msg.data[i].user_name + ': '},
+                  'message': {'class': 'p', 'content': msg.data[i].content},
+                  'image': {'class': 'img', 'src': msg.data[i].user_img}
+              }, 'tweet');
+          }
+        });
+        $('form#stop').submit(function(event) {
+          if(!socket.connected)
+              socket.connect();
+          socket.emit('remove',{index:parseInt($('#index').val())});
+          addTweet({'title':{'class':'h4','content':'Disconnect message sent'}},'system');
+          return false;
+        });
+        $('form#start').submit(function(event) {
+          if(!socket.connected)
+              socket.connect();
+          socket.emit('create',{ckey:{{ "'" | safe +ckey+"'" | safe }}, csec:{{ "'" | safe +csec+"'" | safe }},
+              atkey:{{ "'" | safe +atkey+"'" | safe }}, atsec:{{ "'" | safe +atsec+"'" | safe }},
+              terms:{{ terms | safe }}, languages:{{ languages | safe }}, qty:parseInt($('#start input').eq(0).val())});
+          addTweet({'title':{'class':'h4','content':'Create message sent'}},'system');
+          return false;
+        });
+        $('form#checkalive').submit(function(event) {
+          if(!socket.connected)
+              socket.connect();
+          socket.emit('check_alive');
+          addTweet({'title':{'class':'h4','content':'Alive Status Check message sent'}},'system');
+          return false;
+        });
+        $(window).unload(function(){io.disconnect()})
+      });
+    </script>
+  </footer>
+{% endblock %}
