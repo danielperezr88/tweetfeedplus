@@ -16,14 +16,14 @@ from threading import Event
 from google.protobuf import timestamp_pb2
 from gcloud import storage
 
-import sys
+import os
 
 CONFIG_BUCKET = 'configs-hf'
 
 # Descargamos el dataset de cancer del bucket de datasets
 client = storage.Client()
 cblob = client.get_bucket(CONFIG_BUCKET).get_blob('tweetfeedplus_config.py')
-fp = open(sys.path.join('app','tweetfeedplus_config.py'),'wb')
+fp = open(os.path.join('app','tweetfeedplus_config.py'),'wb')
 cblob.download_to_file(fp)
 fp.close()
 
