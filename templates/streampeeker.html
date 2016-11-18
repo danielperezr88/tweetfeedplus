@@ -30,6 +30,8 @@
                     aux = $('<'+contents[elem]['class']+'/>');
                 if ('content' in contents[elem])
                     aux.append(contents[elem]['content']);
+                if ('classes' in contents[elem])
+                    aux.addClass(contents[elem]['classes']);
                 for (var at in attributes){
                     if (attributes[at] in contents[elem])
                         aux.attr(attributes[at], contents[elem][attributes[at]]);
@@ -73,7 +75,8 @@
                   'title': {'class': 'h4', 'content': msg.data[i].user_name + ': '},
                   'message': {'class': 'p', 'content': msg.data[i].content},
                   'image': {'class': 'img', 'src': msg.data[i].user_img},
-                  'sentiment': {'class':'div', 'content':"Sentiment: "+msg.data[i].sentiment+" ("+msg.data[i].score+")"}
+                  'sentiment': {'class': 'div', 'classes': 'values',
+                      'content': "Sentiment: " + msg.data[i].sentiment + " (" + msg.data[i].score + ")"}
               }, 'tweet');
           }
         });
