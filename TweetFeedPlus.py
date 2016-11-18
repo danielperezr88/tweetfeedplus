@@ -99,7 +99,7 @@ def no_impostors_wanted():
 MYIP = req.get(generate_url('jsonip.com')).json()['ip']
 
 app = Flask(__name__, static_url_path="", static_folder='static')
-flask_options = dict(port=50100, host='0.0.0.0', debug=True)
+flask_options = dict(port=50100, host='0.0.0.0')
 def run():
     app.secret_key = hexlify(urandom(24))
     socketio.init_app(app, message_queue='amqp://localhost:5672')
