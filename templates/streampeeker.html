@@ -85,7 +85,7 @@
                                       'content': msg.data[i].sentiment + " (" + msg.data[i].score + ")"
                                   }
                               },
-                              'sentiment_values')).html()
+                              'sentiment_values')).wrap('<p/>').parent().html()
                   }
               }, 'tweet');
           }
