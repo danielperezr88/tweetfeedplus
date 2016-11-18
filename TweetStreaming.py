@@ -33,11 +33,30 @@ alchemy_language = AlchemyLanguageV1(api_key=conf.api_key)
 
 class MyListener(StreamListener):
     def __init__(self, count, socketio, stopper):
-        self.last_pop_time = parser.datetime.datetime.now()
         self.count = count
         self.queue = deque(maxlen=int(count))
         self.socketio = socketio
         self.stopper = stopper
+
+        self.last_data_time = int(parser.datetime.datetime.now().strftime("%d"))
+        self.limit = dict(day=self.last_data_time, limit=0)
+        self.limit_path = os.path.join('app', 'api_use_limit.json')
+
+        existed = os.path.exists(self.limit_path)
+        if existed:
+            self.load_limits()
+        if self.limit['day'] != self.last_data_time or not existed:
+            self.update_limits(self.last_data_time)
+
+    def load_limits(self):
+        fp = open(self.limit_path, 'rb')
+        self.limit = json.load(fp)
+        fp.close()
+
+    def update_limits(self):
+        fp = open(self.limit_path, 'wb')
+        json.dump(self.limit, fp)
+        fp.close()
 
     def on_data(self, tweet):
 
@@ -45,14 +64,21 @@ class MyListener(StreamListener):
 
         try:
 
-            alchemy_res = alchemy_language.sentiment(text=tweet['text'])
-            if alchemy_res['status'] == 'OK':
-                sentiment = alchemy_res['docSentiment']['type']
-                score = alchemy_res['docSentiment']['score']
-            else:
-                sentiment = 'unknown'
-                score = 0
+            tdy = int(parser.datetime.datetime.now().strftime("%d"))
+            if self.last_data_time != tdy:
+                self.last_data_time = tdy
+                self.limit = dict(day=self.last_data_time, limit=0)
+                self.update_limits()
 
+            sentiment = 'unknown'
+            score = 0
+            if self.limit['limit'] < 1000:
+                alchemy_res = alchemy_language.sentiment(text=tweet['text'])
+                if alchemy_res['status'] == 'OK':
+                    sentiment = alchemy_res['docSentiment']['type']
+                    score = alchemy_res['docSentiment']['score']
+                self.limit['limit'] += 1
+                self.update_limits()
 
             emoji_pattern = re.compile(
                 u"[\u0100-\uFFFF\U0001F000-\U0001F1FF\U0001F300-\U0001F64F\U0001F680-\U0001F6FF\U0001F700-\U0001FFFF\U000FE000-\U000FEFFF]+",
@@ -104,18 +130,6 @@ class MyListener(StreamListener):
                                namespace='/streampeek_socket')
 
         return not self.stopper.is_set()
-
-    def pop(self):
-
-        self.last_pop_time = parser.datetime.datetime.now()
-
-        try:
-            return self.queue.pop()
-        except IndexError:
-            return []
-
-    def keep_active(self):
-        return parser.datetime.datetime.now() - self.last_pop_time < parser.datetime.timedelta(seconds=60)
 
     def on_error(self, status):
         if status == 401:

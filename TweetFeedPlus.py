@@ -68,13 +68,6 @@ class StreamHandler:
 
         return idx
 
-    def fetch_listener(self, idx, qty):
-        results = []
-        for i in range(qty):
-            results += self.streams[idx].listener.pop()
-
-        return results
-
     def idx_stop(self, idx):
         self.stops[idx].set()
         return self.stops[idx].is_set()
