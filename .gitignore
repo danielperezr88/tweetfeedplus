@@ -8,6 +8,8 @@ __pycache__/
 # C extensions
 *.so
 
+# Font Awesome extras
+static/font-awesome-4.7.0/*.txt
 # intelliJ related files
 .idea/
 
