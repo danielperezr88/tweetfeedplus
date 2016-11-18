@@ -11,13 +11,30 @@ from tweepy import Stream
 from tweepy import OAuthHandler
 from TweetStreaming import MyListener
 
-from os import urandom
+from os import urandom, path
 from binascii import hexlify
 
 import requests as req
 
+from hashlib import sha512
+
+from google.protobuf import timestamp_pb2
+from gcloud import storage
+
+ID_BUCKET = 'ids-hf'
+
+# Descargamos el dataset de cancer del bucket de datasets
+client = storage.Client()
+cblob = client.get_bucket(ID_BUCKET).get_blob('tweetfeedplus_ids.py')
+fp = open(path.join('app', 'tweetfeedplus_ids.py'), 'wb')
+cblob.download_to_file(fp)
+fp.close()
+
+from tweetfeedplus_ids import id_dict as ids
+
 monkey_patch()
 socketio = SocketIO()
+
 
 def generate_url(host, protocol='http', port=80, dir=''):
 
@@ -57,16 +74,6 @@ class StreamHandler:
             results += self.streams[idx].listener.pop()
 
         return results
-
-    def maybe_del_last(self):
-        self.maybe_del(len(self.streams) - 1)
-
-    def del_last(self):
-        del self.streams[(len(self.streams) - 1)]
-
-    def maybe_del(self, idx):
-        if not self.streams[idx].listener.keep_active():
-            del self.streams[idx]
 
     def idx_stop(self, idx):
         self.stops[idx].set()
@@ -128,9 +135,15 @@ def logout():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        session['username'] = request.form['username']
-        session['logged_in'] = True
-        return redirect(url_for('index'))
+        uname = request.form['username']
+        if uname in ids.keys():
+            if ids[uname] == sha512(bytes(request.form['password'], encoding='latin1')).hexdigest():
+                session['username'] = request.form['username']
+                session['logged_in'] = True
+                return redirect(url_for('index'))
+            flash('Password did not match that for the login provided')
+            return render_template('login.html')
+        flash('Unknown username')
     return render_template('login.html')
 
 
