@@ -75,8 +75,18 @@
                   'title': {'class': 'h4', 'content': msg.data[i].user_name + ': '},
                   'message': {'class': 'p', 'content': msg.data[i].content},
                   'image': {'class': 'img', 'src': msg.data[i].user_img},
-                  'sentiment': {'class': 'div', 'classes': 'values',
-                      'content': "Sentiment: " + msg.data[i].sentiment + " (" + msg.data[i].score + ")"}
+                  'sentiment': {
+                      'class': 'div', 'classes': 'values',
+                      'content': $('<ul/>').append(ajaxMsg(
+                              {
+                                  'sentiment': {'class': 'h5', 'content': 'Sentiment: '},
+                                  'value': {
+                                      'class': 'p',
+                                      'content': msg.data[i].sentiment + " (" + msg.data[i].score + ")"
+                                  }
+                              },
+                              'sentiment_values')).html()
+                  }
               }, 'tweet');
           }
         });
