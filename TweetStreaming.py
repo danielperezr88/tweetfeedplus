@@ -50,12 +50,12 @@ class MyListener(StreamListener):
             self.update_limits()
 
     def load_limits(self):
-        fp = open(self.limit_path, 'rb')
+        fp = open(self.limit_path, 'r')
         self.limit = json.load(fp)
         fp.close()
 
     def update_limits(self):
-        fp = open(self.limit_path, 'wb')
+        fp = open(self.limit_path, 'w')
         json.dump(self.limit, fp)
         fp.close()
 
