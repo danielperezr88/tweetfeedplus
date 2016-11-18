@@ -72,7 +72,8 @@
               addTweet({
                   'title': {'class': 'h4', 'content': msg.data[i].user_name + ': '},
                   'message': {'class': 'p', 'content': msg.data[i].content},
-                  'image': {'class': 'img', 'src': msg.data[i].user_img}
+                  'image': {'class': 'img', 'src': msg.data[i].user_img},
+                  'sentiment': {'class':'div', 'content':"Sentiment: "+msg.data[i].sentiment+" ("+msg.data[i].score+")"}
               }, 'tweet');
           }
         });
