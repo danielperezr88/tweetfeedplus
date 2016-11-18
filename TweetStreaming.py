@@ -46,6 +46,7 @@ class MyListener(StreamListener):
         if existed:
             self.load_limits()
         if self.limit['day'] != self.last_data_time or not existed:
+            self.limit = dict(day=self.last_data_time, limit=0)
             self.update_limits(self.last_data_time)
 
     def load_limits(self):
