@@ -141,9 +141,9 @@ def login():
                 session['username'] = request.form['username']
                 session['logged_in'] = True
                 return redirect(url_for('index'))
-            flash('Password did not match that for the login provided')
+            flash('Password did not match that for the login provided', 'bad_login')
             return render_template('login.html')
-        flash('Unknown username')
+        flash('Unknown username', 'bad_login')
     return render_template('login.html')
 
 
