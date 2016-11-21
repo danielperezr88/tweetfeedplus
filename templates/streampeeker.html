@@ -113,7 +113,7 @@
           addTweet({'title':{'class':'h4','content':'Alive Status Check message sent'}},'system');
           return false;
         });
-        $(window).unload(function(){io.disconnect()})
+        $(window).unload(function(){socket.emit('remove',{index:parseInt($('#index').val())});})
       });
     </script>
   </footer>
